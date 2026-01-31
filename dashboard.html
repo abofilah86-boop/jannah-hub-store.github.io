@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛 | Admin Command Center</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Dashboard Specific Overrides */
+        
+        body {
+            background: radial-gradient(circle at center, #1a0b2e 0%, #0f0518 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Ensure Dashboard is always visible and flex logic works for full page */
+        
+        .dashboard-layout {
+            display: none;
+            /* Hidden by default until login */
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+        
+        .dashboard-layout.active {
+            display: flex;
+        }
+        /* Login Modal Styling Enhancement */
+        
+        #admin-login-modal {
+            display: flex;
+            /* Always flex to center */
+            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.6);
+        }
+        /* Login Card Animation */
+        
+        #admin-login-modal .modal-content {
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 50px rgba(157, 78, 221, 0.3);
+            text-align: center;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        /* RTL overrides for the standalone page */
+        
+        body.rtl {
+            direction: rtl;
+            font-family: var(--font-ar);
+        }
+    </style>
+</head>
+
+<body class="rtl">
+    <!-- Default to Arabic/RTL for Admin -->
+
+    <!-- Login Modal -->
+    <div id="admin-login-modal" class="modal active">
+        <div class="modal-content">
+            <h2 style="font-size: 2rem; margin-bottom: 2rem; background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">
+                <i class="fa-solid fa-user-secret"></i> Admin Access
+            </h2>
+            <div class="ticket-form">
+                <input type="password" id="admin-password" placeholder="Enter Access Code" style="text-align: center; font-size: 1.2rem; letter-spacing: 5px;">
+                <button class="cta-btn full-width" onclick="checkAdminPassword()" style="width: 100%; margin-top: 1rem;">
+                    <i class="fa-solid fa-fingerprint"></i> Login
+                </button>
+                <div style="margin-top: 2rem;">
+                    <a href="index.html" style="color: var(--text-gray); font-size: 0.9rem;">
+                        <i class="fa-solid fa-arrow-left"></i> Return to Store
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Layout -->
+    <section id="admin-dashboard" class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span data-i18n="admin_panel">Admin Panel</span>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="active" onclick="switchAdminTab('products')" id="tab-products">
+                    <i class="fa-solid fa-box"></i> <span data-i18n="admin_products">Products</span>
+                </li>
+                <li onclick="switchAdminTab('orders')" id="tab-orders">
+                    <i class="fa-solid fa-clipboard-list"></i> <span data-i18n="admin_orders">Orders</span>
+                </li>
+                <li onclick="switchAdminTab('settings')" id="tab-settings">
+                    <i class="fa-solid fa-gear"></i> <span data-i18n="admin_settings">Settings</span>
+                </li>
+            </ul>
+
+            <div style="margin-top: auto;">
+                <a href="index.html" class="logout-btn" style="text-decoration: none; margin-bottom: 10px; border-color: var(--primary); color: var(--primary);">
+                    <i class="fa-solid fa-store"></i> <span data-i18n="admin_back">Return to Store</span>
+                </a>
+                <button class="logout-btn" onclick="logoutAdmin()">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="admin_logout">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- PRODUCTS TAB -->
+            <div id="view-products" class="admin-view">
+                <header class="dashboard-header">
+                    <div class="header-title">
+                        <h2 data-i18n="admin_prod_mgmt">Product Management</h2>
+                        <p data-i18n="admin_prod_desc">Manage your store items effectively</p>
+                    </div>
+                    <button class="cta-btn small" onclick="openProductModal()">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="admin_add_prod">Add Product</span>
+                    </button>
+                </header>
+
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon coding"><i class="fa-solid fa-laptop-code"></i></div>
+                        <div class="stat-info">
+                            <h3 data-i18n="cat_coding">Coding</h3>
+                            <span id="count-coding">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon design"><i class="fa-solid fa-palette"></i></div>
+                        <div class="stat-info">
+                            <h3 data-i18n="cat_design">Design</h3>
+                            <span id="count-design">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon games"><i class="fa-solid fa-gamepad"></i></div>
+                        <div class="stat-info">
+                            <h3 data-i18n="cat_games">Games</h3>
+                            <span id="count-games">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon total"><i class="fa-solid fa-box-open"></i></div>
+                        <div class="stat-info">
+                            <h3 data-i18n="admin_total_items">Total Items</h3>
+                            <span id="count-total">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th data-i18n="prod_name">Name</th>
+                                <th data-i18n="prod_cat">Category</th>
+                                <th data-i18n="prod_price">Price</th>
+                                <th data-i18n="prod_actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-table-body">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ORDERS TAB -->
+            <div id="view-orders" class="admin-view hidden">
+                <header class="dashboard-header">
+                    <div class="header-title">
+                        <h2 data-i18n="admin_order_req">Order Requests</h2>
+                        <p data-i18n="admin_order_desc">Track customer purchases and tickets</p>
+                    </div>
+                    <button class="cta-btn small secondary" onclick="clearAllOrders()">
+                        <i class="fa-solid fa-trash"></i> <span data-i18n="admin_clear_all">Clear All</span>
+                    </button>
+                </header>
+
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-table-body">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SETTINGS TAB -->
+            <div id="view-settings" class="admin-view hidden">
+                <header class="dashboard-header">
+                    <div class="header-title">
+                        <h2 data-i18n="admin_site_config">Website Configuration</h2>
+                        <p data-i18n="admin_config_desc">Customize your site content and appearance</p>
+                    </div>
+                    <button class="cta-btn small" onclick="saveSiteSettings()">
+                        <i class="fa-solid fa-save"></i> <span data-i18n="admin_save">Save Changes</span>
+                    </button>
+                </header>
+
+                <div class="settings-grid">
+                    <div class="setting-card">
+                        <h3 data-i18n="admin_general"><i class="fa-solid fa-heading"></i> General Content</h3>
+                        <div class="form-group">
+                            <label data-i18n="admin_hero_title">Hero Title</label>
+                            <input type="text" id="setting-hero-title" placeholder="Welcome to 𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="admin_hero_sub">Hero Subtitle</label>
+                            <input type="text" id="setting-hero-subtitle" placeholder="The ultimate marketplace...">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="admin_cta">CTA Button Text</label>
+                            <input type="text" id="setting-hero-cta" placeholder="Explore Now">
+                        </div>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3 data-i18n="admin_links"><i class="fa-solid fa-link"></i> External Links</h3>
+                        <div class="form-group">
+                            <label data-i18n="admin_discord">Discord Invite URL</label>
+                            <input type="text" id="setting-discord-link" placeholder="https://discord.gg/...">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="admin_email">Contact Email</label>
+                            <input type="text" id="setting-email" placeholder="support@jannah.com">
+                        </div>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3 data-i18n="admin_visuals"><i class="fa-solid fa-image"></i> Visuals</h3>
+                        <div class="form-group">
+                            <label data-i18n="admin_banner">Banner Image URL</label>
+                            <input type="text" id="setting-banner-image" placeholder="https://... (Leave empty for default)">
+                        </div>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3 data-i18n="admin_features"><i class="fa-solid fa-toggle-on"></i> Features</h3>
+                        <div class="toggle-group">
+                            <label data-i18n="admin_show_games">Show "Games" Category</label>
+                            <label class="switch">
+                                <input type="checkbox" id="setting-show-games" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-group">
+                            <label data-i18n="admin_maint">Maintenance Mode</label>
+                            <label class="switch">
+                                <input type="checkbox" id="setting-maintenance">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <!-- Product Modal (Add/Edit) -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeProductModal()">&times;</span>
+            <h2 id="modal-title">Add New Product</h2>
+            <input type="hidden" id="edit-product-id">
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="product-category">
+                    <option value="coding">Coding</option>
+                    <option value="design">Design</option>
+                    <option value="games">Games</option>
+                    <option value="support">Support</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="product-name" placeholder="Enter product name">
+            </div>
+
+            <div class="form-group">
+                <label>Price ($)</label>
+                <input type="number" id="product-price" placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label>Product Image</label>
+                <div class="file-upload-wrapper" id="upload-wrapper">
+                    <input type="file" id="product-file-input" accept="image/*" onchange="previewImage(event)">
+                    <div class="upload-placeholder" id="upload-placeholder">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>Click to Upload Image</p>
+                    </div>
+                    <img id="image-preview" src="" alt="Preview" class="hidden">
+                </div>
+                <!-- Hidden input to store base64 for editing/saving if needed, though we can just read from the file input or the img src for persistence logic -->
+                <input type="hidden" id="product-base64-store">
+            </div>
+
+            <button class="cta-btn full-width" onclick="saveProduct()" style="width: 100%; margin-top: 1rem;">Save
+                Product</button>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

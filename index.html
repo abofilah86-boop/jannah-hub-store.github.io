@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛 | Premium Digital Services</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Cairo:wght@400;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <img src="logo.png" alt="𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛 Logo">
+            <span>𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active" data-i18n="nav_home" onclick="showSection('hero')">Home</a></li>
+            <li><a href="#categories" data-i18n="nav_coding" onclick="selectCategory('coding')">Coding</a></li>
+            <li><a href="#categories" data-i18n="nav_design" onclick="selectCategory('design')">Design</a></li>
+            <li><a href="#categories" data-i18n="nav_games" onclick="selectCategory('games')">Games</a></li>
+            <li><a href="#categories" data-i18n="nav_support" onclick="selectCategory('support')">Support</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="lang-toggle" onclick="toggleLanguage()" title="Switch Language">AR</button>
+            <div class="cart-icon" onclick="toggleCart()" title="View Cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+        <div class="hamburger" onclick="toggleMenu()" title="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 data-i18n="hero_title">Welcome to <span class="gradient-text">𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛</span></h1>
+                <p data-i18n="hero_subtitle">The ultimate marketplace for Discord interactions, Gaming Scripts, and
+                    Premium Bots.</p>
+                <button class="cta-btn" onclick="scrollToCategories()" data-i18n="hero_cta">Explore Now</button>
+            </div>
+            <div class="hero-visual">
+                <img src="logo.png" alt="𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛 Cube" class="floating-cube">
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Selection -->
+    <section id="categories">
+        <h2 class="section-title" data-i18n="section_categories">Our Services</h2>
+        <div class="category-grid">
+            <!-- Coding Orders -->
+            <div class="category-card coding-card" onclick="openServiceOptions('coding')">
+                <i class="fa-solid fa-laptop-code"></i>
+                <h3 data-i18n="cat_coding">Coding Orders</h3>
+                <p data-i18n="cat_coding_desc">Bots, Websites, Game Scripts.</p>
+            </div>
+            <!-- Design Orders -->
+            <div class="category-card design-card" onclick="openServiceOptions('design')">
+                <i class="fa-solid fa-palette"></i>
+                <h3 data-i18n="cat_design">Design Orders</h3>
+                <p data-i18n="cat_design_desc">Thumbnails, Video Editing, Montages.</p>
+            </div>
+            <!-- Games Orders -->
+            <div class="category-card games-card" onclick="openServiceOptions('games')">
+                <i class="fa-solid fa-gamepad"></i>
+                <h3 data-i18n="cat_games">Games Orders</h3>
+                <p data-i18n="cat_games_desc">Steam Cards, PS Cards, Accounts.</p>
+            </div>
+            <!-- Technical Support -->
+            <div class="category-card support-card" onclick="openServiceOptions('support')">
+                <i class="fa-solid fa-headset"></i>
+                <h3 data-i18n="cat_support">Technical Support</h3>
+                <p data-i18n="cat_support_desc">Help, Inquiries, General Issues.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sub-Options Modal/Section (Hidden by default) -->
+    <section id="service-options" class="hidden">
+        <div class="options-container">
+            <button class="back-btn" onclick="hideServiceOptions()"><i class="fa-solid fa-arrow-left"></i> <span
+                    data-i18n="back">Back</span></button>
+            <h2 id="selected-service-title">Service Options</h2>
+            <div class="options-grid">
+                <div class="option-card" onclick="handleServiceAction('buy')">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    <h3 data-i18n="opt_buy">Buy Available</h3>
+                </div>
+                <div class="option-card" onclick="handleServiceAction('request')">
+                    <i class="fa-solid fa-pen-fancy"></i>
+                    <h3 data-i18n="opt_request">Request Special</h3>
+                </div>
+                <div class="option-card" onclick="handleServiceAction('sell')">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <h3 data-i18n="opt_sell">Sell Your Item</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Display Section (Hidden by default) -->
+    <section id="products-view" class="hidden">
+        <div class="container">
+            <button class="back-btn" onclick="backToOptions()"><i class="fa-solid fa-arrow-left"></i> <span
+                    data-i18n="back">Back</span></button>
+            <h2 id="products-title">Products</h2>
+            <div class="products-grid" id="products-container">
+                <!-- Products injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleCart()">&times;</span>
+            <h2 data-i18n="cart_title">Your Shopping Cart</h2>
+            <div id="cart-items">
+                <!-- Cart items injected by JS -->
+                <p class="empty-msg" data-i18n="cart_empty">Your cart is empty.</p>
+            </div>
+            <div class="cart-footer">
+                <div class="total">
+                    <span data-i18n="total">Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <button class="checkout-btn" onclick="initiateCheckout()" data-i18n="checkout">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket/Checkout Modal -->
+    <div id="ticket-modal" class="modal">
+        <div class="modal-content ticket-content">
+            <span class="close-modal" onclick="closeTicketModal()">&times;</span>
+            <h2 data-i18n="ticket_title">Open a Ticket</h2>
+            <p data-i18n="ticket_desc">To complete your request, please open a ticket with our administration team.</p>
+
+            <div class="ticket-steps">
+                <div class="step active">
+                    <div class="step-icon">1</div>
+                    <div class="step-text" data-i18n="step_1">Select Type</div>
+                </div>
+                <div class="line"></div>
+                <div class="step">
+                    <div class="step-icon">2</div>
+                    <div class="step-text" data-i18n="step_2">Contact Admin</div>
+                </div>
+            </div>
+
+            <div class="ticket-form">
+                <label data-i18n="ticket_type">Ticket Type:</label>
+                <input type="text" id="ticket-type-input" readonly value="Purchase">
+
+                <label data-i18n="ticket_details">Details:</label>
+                <textarea id="ticket-details" rows="4" readonly></textarea>
+
+                <button class="discord-btn" onclick="redirectToDiscord()">
+                    <i class="fa-brands fa-discord"></i> <span data-i18n="open_ticket_btn">Open Ticket on Discord</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Maintenance Mode Overlay -->
+    <div id="maintenance-overlay" class="maintenance-overlay hidden">
+        <div class="maintenance-content">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <h2>We are currently undergoing maintenance</h2>
+            <p>Please check back later using the link below.</p>
+            <button onclick="window.location.href='dashboard.html'" class="admin-trigger-btn">Admin Access</button>
+        </div>
+    </div>
+
+    <!-- Legendary Admin Trigger -->
+    <div class="admin-access-portal" onclick="window.location.href='dashboard.html'" title="Admin Access">
+        <div class="portal-ring"></div>
+        <i class="fa-solid fa-user-secret"></i>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 𝐉𝐚𝐧𝐧𝐚𝐡 𝐇𝐮𝐛. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
